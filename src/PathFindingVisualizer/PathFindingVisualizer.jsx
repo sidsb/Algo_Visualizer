@@ -21,7 +21,8 @@ export class PathFindingVisualizer extends Component {
       grid: [],
       mouseIsPressed: false,
       vset: new Set(),
-      hset: new Set()
+      hset: new Set(),
+      flagForDfs: false
     };
   }
 
@@ -80,8 +81,14 @@ export class PathFindingVisualizer extends Component {
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
-  animateDfs(visitedNodesInOrder) {
+  animateDfs(visitedNodesInOrder, nodesinOrder) {
     for (let i = 0; i < visitedNodesInOrder.length; ++i) {
+      if (i === visitedNodesInOrder.length - 1) {
+        setTimeout(() => {
+          this.animateShortestPathdfs(nodesinOrder);
+        }, 10 * i);
+        return;
+      }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -115,9 +122,7 @@ export class PathFindingVisualizer extends Component {
       grid[FINISH_NODE_ROW][FINISH_NODE_COL]
     );
     console.log(nodesinOrder);
-
-    this.animateDfs(visitedNodesInOrder);
-    this.animateShortestPathdfs(nodesinOrder);
+    this.animateDfs(visitedNodesInOrder, nodesinOrder);
   }
   animateSid(visitedNodes) {
     for (let i = 0; i < visitedNodes.length; ++i) {
@@ -271,12 +276,15 @@ export class PathFindingVisualizer extends Component {
       this.setState({ grid: newGrid, mouseIsPressed: true });
     }
     this.recursive_division(1, 1, 18, 48);
+
   }
 
   render() {
+
     const { grid, mouseIsPressed } = this.state;
 
     return (
+
       <Fragment>
         <Breadcrumb>
           <ButtonGroup className="ml-0">
