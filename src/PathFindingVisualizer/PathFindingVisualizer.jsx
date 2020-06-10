@@ -6,6 +6,8 @@ import { dfs, getNodesDfsPathOrder, getdfsnodes } from "../algorithms/dfs";
 import { sidAlgo, getsidnodes } from "../algorithms/sid";
 import { bestfs, getNodesInBestPathOrder } from "../algorithms/bestfs";
 import { astar, getNodesInastarPathOrder } from "../algorithms/astar";
+import 'bootstrap/dist/css/bootstrap.css';
+import { Button, Navbar, ButtonGroup, Jumbotron, Breadcrumb } from 'reactstrap';
 
 const START_NODE_ROW = 5;
 const START_NODE_COL = 7;
@@ -276,26 +278,28 @@ export class PathFindingVisualizer extends Component {
 
     return (
       <Fragment>
-        <div className="top">
-          <button className="compute" onClick={() => this.visualizeDijkstra()}>
-            Visualize Dijkstra's Algorithm
-          </button>
-          <button className="compute" onClick={() => this.visualizeDFS()}>
-            Visualize DFS Algorithm
-          </button>
-          <button className="compute" onClick={() => this.visualizeastar()}>
-            A Star
-          </button>
-          <button className="compute" onClick={() => this.visualizeBestFS()}>
-            Best First Search
-          </button>
-          <button className="compute" onClick={() => this.visualizeSidAlgo()}>
-            Visualize Siddhartha's Algorithm
-          </button>
-          <button className="compute" onClick={() => this.generateMaze()}>
+        <Breadcrumb>
+          <ButtonGroup className="ml-0">
+            <Button className="btn btn-primary bg-primary" onClick={() => this.visualizeDijkstra()}>
+              Visualize Dijkstra's Algorithm
+          </Button>
+            <Button className="btn btn-primary bg-secondary" onClick={() => this.visualizeDFS()}>
+              Visualize DFS Algorithm
+          </Button>
+            <Button className="btn btn-primary bg-success" onClick={() => this.visualizeastar()}>
+              A Star
+          </Button>
+            <Button className="btn btn-primary bg-danger" onClick={() => this.visualizeBestFS()}>
+              Best First Search
+          </Button>
+            <Button className="btn btn-primary bg-info" onClick={() => this.visualizeSidAlgo()}>
+              Visualize Siddhartha's Algorithm
+          </Button>
+          </ButtonGroup>
+          <Button className="btn btn-warning left" onClick={() => this.generateMaze()}>
             Generate Maze
-          </button>
-        </div>
+          </Button>
+        </Breadcrumb>
         <div className="gird">
           {grid.map((row, rowIdx) => {
             return (
