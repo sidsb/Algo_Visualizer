@@ -290,6 +290,7 @@ export class PathFindingVisualizer extends Component {
     this.recursive_division(1, 1, 18, 48);
 
 
+
   }
   toggleModal() {
     this.setState({
