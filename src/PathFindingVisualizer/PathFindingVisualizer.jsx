@@ -7,27 +7,39 @@ import { sidAlgo, getsidnodes } from "../algorithms/sid";
 import { bestfs, getNodesInBestPathOrder } from "../algorithms/bestfs";
 import { astar, getNodesInastarPathOrder } from "../algorithms/astar";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Navbar, ButtonGroup, Jumbotron, Breadcrumb } from 'reactstrap';
+import { Button, ButtonGroup, Breadcrumb, Modal, ModalHeader, ModalBody, FormGroup, Form, Input, Label } from 'reactstrap';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
+import { MDBBtn } from "mdbreact";
 
-const START_NODE_ROW = 5;
-const START_NODE_COL = 7;
-const FINISH_NODE_ROW = 16;
-const FINISH_NODE_COL = 44;
+
 
 export class PathFindingVisualizer extends Component {
   constructor() {
     super();
     this.state = {
+      START_NODE_ROW: 5,
+      START_NODE_COL: 7,
+      FINISH_NODE_ROW: 16,
+      FINISH_NODE_COL: 44,
+      isModalOpen: false,
       grid: [],
       mouseIsPressed: false,
       vset: new Set(),
       hset: new Set(),
-      flagForDfs: false
+      flagForDfs: false,
     };
+    this.toggleModal = this.toggleModal.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   componentDidMount() {
-    const grid = getInitialGrid();
+    const grid = getInitialGrid(
+      this.state.START_NODE_ROW,
+      this.state.START_NODE_COL,
+      this.state.FINISH_NODE_ROW,
+      this.state.FINISH_NODE_COL);
     this.setState({ grid });
   }
 
@@ -74,8 +86,8 @@ export class PathFindingVisualizer extends Component {
 
   visualizeDijkstra() {
     const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const startNode = grid[this.state.START_NODE_ROW][this.state.START_NODE_COL];
+    const finishNode = grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -110,16 +122,16 @@ export class PathFindingVisualizer extends Component {
     const { grid } = this.state;
     dfs(
       grid,
-      START_NODE_ROW,
-      START_NODE_COL,
-      FINISH_NODE_ROW,
-      FINISH_NODE_COL,
+      this.state.START_NODE_ROW,
+      this.state.START_NODE_COL,
+      this.state.FINISH_NODE_ROW,
+      this.state.FINISH_NODE_COL,
       null
     );
     const visitedNodesInOrder = getdfsnodes();
     console.log(visitedNodesInOrder);
     const nodesinOrder = getNodesDfsPathOrder(
-      grid[FINISH_NODE_ROW][FINISH_NODE_COL]
+      grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL]
     );
     console.log(nodesinOrder);
     this.animateDfs(visitedNodesInOrder, nodesinOrder);
@@ -137,10 +149,10 @@ export class PathFindingVisualizer extends Component {
     const { grid } = this.state;
     sidAlgo(
       grid,
-      START_NODE_ROW,
-      START_NODE_COL,
-      FINISH_NODE_ROW,
-      FINISH_NODE_COL,
+      this.state.START_NODE_ROW,
+      this.state.START_NODE_COL,
+      this.state.FINISH_NODE_ROW,
+      this.state.FINISH_NODE_COL,
       null
     );
     const visitedNodes = getsidnodes();
@@ -153,14 +165,14 @@ export class PathFindingVisualizer extends Component {
       const tmparray = [];
       for (let j = 0; j < 50; ++j) {
         tmparray[j] =
-          (i - FINISH_NODE_ROW) * (i - FINISH_NODE_ROW) +
-          (j - FINISH_NODE_COL) * (j - FINISH_NODE_COL);
+          (i - this.state.FINISH_NODE_ROW) * (i - this.state.FINISH_NODE_ROW) +
+          (j - this.state.FINISH_NODE_COL) * (j - this.state.FINISH_NODE_COL);
       }
       heuristic.push(tmparray);
     }
     const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const startNode = grid[this.state.START_NODE_ROW][this.state.START_NODE_COL];
+    const finishNode = grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL];
     const visitedNodesInOrder = bestfs(grid, startNode, finishNode, heuristic);
     const nodesInBestPathOrder = getNodesInBestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInBestPathOrder);
@@ -172,14 +184,14 @@ export class PathFindingVisualizer extends Component {
       const tmparray = [];
       for (let j = 0; j < 50; ++j) {
         tmparray[j] =
-          (i - FINISH_NODE_ROW) * (i - FINISH_NODE_ROW) +
-          (j - FINISH_NODE_COL) * (j - FINISH_NODE_COL);
+          (i - this.state.FINISH_NODE_ROW) * (i - this.state.FINISH_NODE_ROW) +
+          (j - this.state.FINISH_NODE_COL) * (j - this.state.FINISH_NODE_COL);
       }
       heuristic.push(tmparray);
     }
     const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const startNode = grid[this.state.START_NODE_ROW][this.state.START_NODE_COL];
+    const finishNode = grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL];
     const visitedNodesInOrder = astar(grid, startNode, finishNode, heuristic);
     const nodesInastarPathOrder = getNodesInastarPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInastarPathOrder);
@@ -277,6 +289,50 @@ export class PathFindingVisualizer extends Component {
     }
     this.recursive_division(1, 1, 18, 48);
 
+
+  }
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen
+    })
+
+  }
+
+  handleLogin(event) {
+    this.toggleModal();
+    // alert("startnoderow: " + this.startnoderow.value + " startnodercol: " + this.startnodecol.value
+    //   + " endnoderow: " + this.endnoderow.value + " endnodercol: " + this.endnodecol.value);
+
+    let sx = this.state.START_NODE_ROW;
+    let sy = this.state.START_NODE_COL;
+    let ex = this.state.FINISH_NODE_ROW;
+    let ey = this.state.FINISH_NODE_COL;
+    document.getElementById(`node-${sx}-${sy}`).className =
+      "node";
+    const { grid } = this.state;
+    grid[sx][sy].isStart = false;
+    document.getElementById(`node-${ex}-${ey}`).className =
+      "node";
+    grid[ex][ey].isFinish = false;
+
+    //creating new start and end nodes
+    this.setState({
+      START_NODE_ROW: this.startnoderow.value,
+      START_NODE_COL: this.startnodecol.value,
+      FINISH_NODE_ROW: this.endnoderow.value,
+      FINISH_NODE_COL: this.endnodecol.value,
+    });
+
+    document.getElementById(`node-${this.startnoderow.value}-${this.startnodecol.value}`).className =
+      "node node-start";
+    grid[this.startnoderow.value][this.startnodecol.value].isStart = false;
+    document.getElementById(`node-${this.endnoderow.value}-${this.endnodecol.value}`).className =
+      "node node-finish";
+    grid[this.endnoderow.value][this.endnodecol.value].isStart = false;
+
+
+    event.preventDefault();
+
   }
 
   render() {
@@ -288,26 +344,57 @@ export class PathFindingVisualizer extends Component {
       <Fragment>
         <Breadcrumb>
           <ButtonGroup className="ml-0">
-            <Button className="btn btn-primary bg-primary" onClick={() => this.visualizeDijkstra()}>
+            <Button className="btn btn-sm bg-primary" onClick={() => this.visualizeDijkstra()}>
               Visualize Dijkstra's Algorithm
           </Button>
-            <Button className="btn btn-primary bg-secondary" onClick={() => this.visualizeDFS()}>
+            <Button className="btn btn-sm bg-secondary" onClick={() => this.visualizeDFS()}>
               Visualize DFS Algorithm
           </Button>
-            <Button className="btn btn-primary bg-success" onClick={() => this.visualizeastar()}>
+            <Button className="btn btn-sm bg-success" onClick={() => this.visualizeastar()}>
               A Star
           </Button>
-            <Button className="btn btn-primary bg-danger" onClick={() => this.visualizeBestFS()}>
+            <Button className="btn btn-sm bg-danger" onClick={() => this.visualizeBestFS()}>
               Best First Search
           </Button>
-            <Button className="btn btn-primary bg-info" onClick={() => this.visualizeSidAlgo()}>
+            <Button className="btn btn-sm bg-info" onClick={() => this.visualizeSidAlgo()}>
               Visualize Siddhartha's Algorithm
           </Button>
           </ButtonGroup>
-          <Button className="btn btn-warning left" onClick={() => this.generateMaze()}>
+          <MDBBtn gardient="aqua" onClick={() => this.generateMaze()}>
             Generate Maze
+          </MDBBtn>
+          <Button outline onClick={this.toggleModal}>
+            <span className="fa fa-sign-in fa-lg"></span> Set Nodes
           </Button>
         </Breadcrumb>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Set Nodes</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={this.handleLogin}>
+              <FormGroup>
+                <Label htmlFor="startnoderow">Start Node Row</Label>
+                <Input type="number" id="startnoderow" name="startnoderow" placeholder="Between 1-18"
+                  innerRef={(input) => this.startnoderow = input}></Input>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="startnodecol">Start Node Col</Label>
+                <Input type="number" id="startnodecol" name="startnodecol" placeholder="Between 1-48"
+                  innerRef={(input) => this.startnodecol = input}></Input>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="endnoderow">End Node Row</Label>
+                <Input type="number" id="endnoderow" name="endnoderow" placeholder="Between 1-18"
+                  innerRef={(input) => this.endnoderow = input}></Input>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="endnodecol">End Node Col</Label>
+                <Input type="number" id="endnodecol" name="endnodecol" placeholder="Between 1-48"
+                  innerRef={(input) => this.endnodecol = input}></Input>
+              </FormGroup>
+              <Button type="submit" value="submit" color="primary">Set Nodes</Button>
+            </Form>
+          </ModalBody>
+        </Modal>
         <div className="gird">
           {grid.map((row, rowIdx) => {
             return (
@@ -348,23 +435,23 @@ export class PathFindingVisualizer extends Component {
   }
 }
 
-const getInitialGrid = () => {
+const getInitialGrid = (sx, sy, ex, ey) => {
   const grid = [];
   for (let row = 0; row < 20; row++) {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
-      currentRow.push(createNode(col, row));
+      currentRow.push(createNode(col, row, sx, sy, ex, ey));
     }
     grid.push(currentRow);
   }
   return grid;
 };
-const createNode = (col, row) => {
+const createNode = (col, row, sx, sy, ex, ey) => {
   return {
     col,
     row,
-    isStart: row === START_NODE_ROW && col === START_NODE_COL,
-    isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+    isStart: row === sx && col === sy,
+    isFinish: row === ex && col === ey,
     distance: 10000,
     isVisited: false,
     isWall: false,
