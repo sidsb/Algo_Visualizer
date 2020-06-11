@@ -1,4 +1,5 @@
-
+This Project is a React-app That can be used to view Graph Searching Algorithms and how an algorithm works in realtime to reach a destination in graph from a particular position.
+Various algorithms are provided so as to compare them and know about time complexities of these algorihms and what dependency they use in order to achieve the result.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
